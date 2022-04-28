@@ -1,8 +1,9 @@
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.FileNotFoundException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * JUnit tests for ShortestPathFD
@@ -10,16 +11,29 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Trevor Johnson
  */
 class FrontendDeveloperTests {
+    private String city1;
+    private String city2;
+    private final int shortestPath;
+
+    public FrontendDeveloperTests() {
+        this.shortestPath = 850;
+        this.city1 = "Chicago";
+        this.city2 = "New York";
+    }
+
 
     /**
      * Tests the starting menu and [q]uit command.
      */
     @Test
-    public void test1() throws FileNotFoundException {
+    public void test1() {
         TextUITester tester = new TextUITester("q\n");
-        CityDistanceBD backend = new CityDistanceBD();
+        IMapLoader loader = new MapLoader(); // new shortestPathLoader();
+        List<String> cities = loader.cityLoader();
+        CityDistanceBD backend = new CityDistanceBD(); //new CityDistanceBD();
         Edge edges = new Edge();
-        ShortestPathFD frontend = new ShortestPathFD(backend, edges);
+        backend.addVertices(cities);
+        IShortestPathFD frontend = new ShortestPathFD(backend, edges); //new ShortestPathFD
 
         frontend.runCommandLoop();
         String output = tester.checkOutput();
@@ -35,15 +49,40 @@ class FrontendDeveloperTests {
      */
     @Test
     public void test2() {
-        TextUITester tester = new TextUITester("c\n");
-        CityDistanceBD backend = new CityDistanceBD();
+        TextUITester tester = new TextUITester("c\n1\n2\n");
+        IMapLoader loader = new MapLoader(); // new shortestPathLoader();
+        List<String> cities = loader.cityLoader();
+        CityDistanceBD backend = new CityDistanceBD(); //new CityDistanceBD();
         Edge edges = new Edge();
-        ShortestPathFD frontend = new ShortestPathFD(backend, edges);
+        backend.addVertices(cities);
+        IShortestPathFD frontend = new ShortestPathFD(backend, edges); //new ShortestPathFD
+
+        frontend.runCommandLoop();
+        String output = tester.checkOutput();
+        System.out.println(tester.toString());
+
+        assertTrue(output.contains("Enter the number associated with the origin city:"));
+
+    }
+    /**
+     * Tests the command 2, choosing origin and destination
+     */
+    @Test
+    public void test3() {
+        TextUITester tester = new TextUITester("p\n");
+        IMapLoader loader = new MapLoader(); // new shortestPathLoader();
+        List<String> cities = loader.cityLoader();
+        CityDistanceBD backend = new CityDistanceBD(); //new CityDistanceBD();
+        Edge edges = new Edge();
+        backend.addVertices(cities);
+        IShortestPathFD frontend = new ShortestPathFD(backend, edges); //new ShortestPathFD
+        this.city1 = "Chicago";
+        this.city2 = "New York";
 
         frontend.runCommandLoop();
         String output = tester.checkOutput();
 
-        assertTrue(output.contains("Enter the number associated with the origin city:"));
+        assertTrue(output.contains("850"));
 
     }
 }
